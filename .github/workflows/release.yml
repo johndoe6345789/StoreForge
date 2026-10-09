@@ -1,8 +1,11 @@
 name: Release
 
 # Every commit to main builds and tests StoreForge, then publishes it as a GitHub release
-# (tag v1.0.<run number>, with StoreForge.apk attached). Installed copies pick the new
-# version up from there as an update.
+# (tag v1.0.<run number>, with StoreForge.apk attached).
+#
+# Each run signs the APK with a new self-signed key generated on the runner, so no signing
+# secrets are needed. Android only updates an app when the signing key matches, which means an
+# APK from one release can't be installed over an APK from another without uninstalling first.
 on:
   push:
     branches: [main]
@@ -18,30 +21,31 @@ concurrency:
 jobs:
   release:
     runs-on: ubuntu-latest
-    env:
-      KEYSTORE_BASE64: ${{ secrets.STOREFORGE_KEYSTORE_BASE64 }}
-      STOREFORGE_KEYSTORE_PASSWORD: ${{ secrets.STOREFORGE_KEYSTORE_PASSWORD }}
-      STOREFORGE_KEY_ALIAS: ${{ secrets.STOREFORGE_KEY_ALIAS }}
-      STOREFORGE_KEY_PASSWORD: ${{ secrets.STOREFORGE_KEY_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
-
-      - name: Check signing key and compute version
-        run: |
-          if [ -z "$KEYSTORE_BASE64" ] || [ -z "$STOREFORGE_KEYSTORE_PASSWORD" ] || [ -z "$STOREFORGE_KEY_ALIAS" ]; then
-            echo "::error::Signing secrets are missing. See 'Publishing releases' in README.md."
-            exit 1
-          fi
-          # Every release gets a higher number than the last, so each one installs over the previous.
-          echo "VERSION_CODE=$GITHUB_RUN_NUMBER" >> "$GITHUB_ENV"
-          echo "VERSION_NAME=1.0.$GITHUB_RUN_NUMBER" >> "$GITHUB_ENV"
-          echo "STOREFORGE_KEYSTORE=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
-          echo "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/release.jks"
 
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
+
+      - name: Generate signing key and compute version
+        run: |
+          # The keystore and its passwords live only on this runner and are never published.
+          STORE_PASSWORD="$(openssl rand -hex 24)"
+          echo "::add-mask::$STORE_PASSWORD"
+          KEYSTORE="$RUNNER_TEMP/release.jks"
+          keytool -genkeypair -keystore "$KEYSTORE" -storepass "$STORE_PASSWORD" -keypass "$STORE_PASSWORD" \
+            -alias storeforge -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=StoreForge"
+          {
+            echo "STOREFORGE_KEYSTORE=$KEYSTORE"
+            echo "STOREFORGE_KEYSTORE_PASSWORD=$STORE_PASSWORD"
+            echo "STOREFORGE_KEY_ALIAS=storeforge"
+            echo "STOREFORGE_KEY_PASSWORD=$STORE_PASSWORD"
+            # Every release gets a higher number than the last.
+            echo "VERSION_CODE=$GITHUB_RUN_NUMBER"
+            echo "VERSION_NAME=1.0.$GITHUB_RUN_NUMBER"
+          } >> "$GITHUB_ENV"
 
       - uses: gradle/actions/setup-gradle@v4
 
@@ -63,7 +67,9 @@ jobs:
           Built from [\`$SHORT_SHA\`]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/$GITHUB_SHA): $SUBJECT
 
           **Install:** download \`StoreForge.apk\` below on your phone and open it.
-          Each release installs over the previous one.
+
+          **Updating:** this release is signed with a new key, so Android won't install it over an
+          older StoreForge. Uninstall the old one first.
 
           Android 8.0+ · built against Android 16 (API 36).
           NOTES
