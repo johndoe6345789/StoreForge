@@ -1,7 +1,11 @@
 {
   "schemaVersion": 1,
   "name": "StoreForge",
-  "featured": ["io.github.johndoe6345789.storeforge"],
+  "featured": [
+    "com.repoforge",
+    "com.caproverforge",
+    "io.github.johndoe6345789.storeforge"
+  ],
   "apps": [
     {
       "packageName": "io.github.johndoe6345789.storeforge",
@@ -11,12 +15,80 @@
       "description": "Browse, install, update and uninstall apps published on GitHub releases. StoreForge keeps itself up to date from this list too.",
       "category": "Tools",
       "icon": "registry/icons/storeforge.png",
-      "tags": ["store", "updates", "github"],
+      "tags": [
+        "store",
+        "updates",
+        "github"
+      ],
       "homepage": "https://github.com/johndoe6345789/StoreForge",
       "license": "MIT",
       "github": {
         "repo": "johndoe6345789/StoreForge",
         "asset": "^StoreForge\\.apk$"
+      }
+    },
+    {
+      "packageName": "com.caproverforge",
+      "name": "CaproverForge",
+      "developer": "johndoe6345789",
+      "summary": "Manage your CapRover server from your phone",
+      "description": "A native client for CapRover. Sign in with your dashboard password, watch server health and live stats, and manage apps: domains and HTTPS, environment variables, ports and volumes, scaling, deploys from an image, Git repository or tarball, live build logs, and rollbacks.",
+      "category": "Developer tools",
+      "icon": "registry/icons/caproverforge.png",
+      "screenshots": [
+        "https://raw.githubusercontent.com/johndoe6345789/CaproverForge/main/docs/screenshots/dashboard.png",
+        "https://raw.githubusercontent.com/johndoe6345789/CaproverForge/main/docs/screenshots/apps.png",
+        "https://raw.githubusercontent.com/johndoe6345789/CaproverForge/main/docs/screenshots/app-status.png",
+        "https://raw.githubusercontent.com/johndoe6345789/CaproverForge/main/docs/screenshots/app-deploy.png",
+        "https://raw.githubusercontent.com/johndoe6345789/CaproverForge/main/docs/screenshots/app-logs.png",
+        "https://raw.githubusercontent.com/johndoe6345789/CaproverForge/main/docs/screenshots/one-click.png"
+      ],
+      "tags": [
+        "caprover",
+        "docker",
+        "server",
+        "deploy",
+        "devops"
+      ],
+      "homepage": "https://github.com/johndoe6345789/CaproverForge",
+      "license": "MIT",
+      "github": {
+        "repo": "johndoe6345789/CaproverForge",
+        "asset": "-debug\\.apk$"
+      }
+    },
+    {
+      "packageName": "com.repoforge",
+      "name": "RepoForge",
+      "developer": "johndoe6345789",
+      "summary": "GitHub, GitLab, Bitbucket, Gitea and Forgejo in one app",
+      "description": "A native client for GitHub, GitLab, Bitbucket, Gitea and Forgejo, with as many accounts as you like on public or self-hosted servers. Browse code and commits, review and merge pull requests, resolve merge conflicts with Claude, follow CI runs and logs, and clone repositories onto the phone to edit, commit and push.",
+      "category": "Developer tools",
+      "icon": "registry/icons/repoforge.png",
+      "screenshots": [
+        "https://raw.githubusercontent.com/johndoe6345789/RepoForge/main/app/screenshots/02-repositories.png",
+        "https://raw.githubusercontent.com/johndoe6345789/RepoForge/main/app/screenshots/03-code.png",
+        "https://raw.githubusercontent.com/johndoe6345789/RepoForge/main/app/screenshots/05-commit.png",
+        "https://raw.githubusercontent.com/johndoe6345789/RepoForge/main/app/screenshots/07-merge-request.png",
+        "https://raw.githubusercontent.com/johndoe6345789/RepoForge/main/app/screenshots/11-resolve-conflicts.png",
+        "https://raw.githubusercontent.com/johndoe6345789/RepoForge/main/app/screenshots/12-on-device.png",
+        "https://raw.githubusercontent.com/johndoe6345789/RepoForge/main/app/screenshots/15-ci-runs.png",
+        "https://raw.githubusercontent.com/johndoe6345789/RepoForge/main/app/screenshots/17-ci-log.png"
+      ],
+      "tags": [
+        "git",
+        "github",
+        "gitlab",
+        "bitbucket",
+        "gitea",
+        "forgejo",
+        "code review"
+      ],
+      "homepage": "https://github.com/johndoe6345789/RepoForge",
+      "license": "MIT",
+      "github": {
+        "repo": "johndoe6345789/RepoForge",
+        "asset": "-debug\\.apk$"
       }
     }
   ]
