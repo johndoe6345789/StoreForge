@@ -91,35 +91,18 @@ The unit tests validate `apps.json`, so CI fails on a broken catalog:
 
 ## Publishing releases
 
-Every commit to `main` is built, tested, signed and published as a GitHub release by
+Every commit to `main` is built, tested and published as a GitHub release by
 [`.github/workflows/release.yml`](.github/workflows/release.yml). Each release is tagged
 `v1.0.<run number>` and carries `StoreForge.apk`, so the
 [latest download link](https://github.com/johndoe6345789/StoreForge/releases/latest/download/StoreForge.apk)
-always points at the newest build. Installed copies see it as an update.
+always points at the newest build.
 
-Releases are signed with a key that must stay the same forever: if it changes, installed copies
-can't be updated and have to be uninstalled first. Set it up once:
+Each run signs the APK with a new self-signed key generated on the runner, and the key is
+discarded afterwards. No signing secrets are needed. The trade-off: Android only updates an app
+when the signing key matches, so a StoreForge installed from one release has to be uninstalled
+before installing a later one. The same applies to StoreForge's own self-update.
 
-```sh
-keytool -genkeypair -v -keystore storeforge.jks -alias storeforge \
-  -keyalg RSA -keysize 4096 -validity 10000
-base64 -w0 storeforge.jks   # copy the output
-```
-
-Add these repository secrets (Settings → Secrets and variables → Actions):
-
-| Secret | Value |
-| --- | --- |
-| `STOREFORGE_KEYSTORE_BASE64` | the base64 output above |
-| `STOREFORGE_KEYSTORE_PASSWORD` | the keystore password |
-| `STOREFORGE_KEY_ALIAS` | `storeforge` |
-| `STOREFORGE_KEY_PASSWORD` | the key password (same as the keystore password unless you chose otherwise) |
-
-Keep `storeforge.jks` somewhere safe and out of the repo. Until the secrets exist the release
-job fails on purpose.
-
-Releases come from `main` only, so changes go through pull requests and each merge publishes a
-release. Pull requests are checked by [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+Pull requests are checked by [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
 
 ## Building locally
 
