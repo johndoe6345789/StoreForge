@@ -89,10 +89,16 @@ The unit tests validate `apps.json`, so CI fails on a broken catalog:
 ./gradlew testDebugUnitTest
 ```
 
-## Publishing a release of StoreForge
+## Publishing releases
 
-Releases are built and signed by [`.github/workflows/release.yml`](.github/workflows/release.yml)
-when you push a version tag. It needs a signing key, set up once:
+Every commit to `main` is built, tested, signed and published as a GitHub release by
+[`.github/workflows/release.yml`](.github/workflows/release.yml). Each release is tagged
+`v1.0.<run number>` and carries `StoreForge.apk`, so the
+[latest download link](https://github.com/johndoe6345789/StoreForge/releases/latest/download/StoreForge.apk)
+always points at the newest build. Installed copies see it as an update.
+
+Releases are signed with a key that must stay the same forever: if it changes, installed copies
+can't be updated and have to be uninstalled first. Set it up once:
 
 ```sh
 keytool -genkeypair -v -keystore storeforge.jks -alias storeforge \
@@ -109,18 +115,11 @@ Add these repository secrets (Settings → Secrets and variables → Actions):
 | `STOREFORGE_KEY_ALIAS` | `storeforge` |
 | `STOREFORGE_KEY_PASSWORD` | the key password (same as the keystore password unless you chose otherwise) |
 
-Keep `storeforge.jks` somewhere safe and out of the repo: if it is lost, existing installs can't
-be updated and have to be uninstalled first.
+Keep `storeforge.jks` somewhere safe and out of the repo. Until the secrets exist the release
+job fails on purpose.
 
-Then tag and push:
-
-```sh
-git tag v1.0.0
-git push origin v1.0.0
-```
-
-The workflow runs the tests, builds `StoreForge.apk` with `versionName` 1.0.0 and `versionCode`
-10000 (major × 10000 + minor × 100 + patch), and creates the GitHub release with the APK attached.
+Releases come from `main` only, so changes go through pull requests and each merge publishes a
+release. Pull requests are checked by [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
 
 ## Building locally
 

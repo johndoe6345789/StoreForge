@@ -5,14 +5,11 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
-// Release builds get their version from the git tag (see .github/workflows/release.yml):
-//   ./gradlew assembleRelease -PversionName=1.2.3
-// versionCode is derived as MAJOR * 10000 + MINOR * 100 + PATCH so every tag upgrades cleanly.
+// Release builds are numbered by .github/workflows/release.yml, which publishes one release per commit to main:
+//   ./gradlew assembleRelease -PversionName=1.0.42 -PversionCode=42
+// Without those properties (local builds) the version falls back to 0.1.0 / 1.
 val storeVersionName = (findProperty("versionName") as String?)?.removePrefix("v") ?: "0.1.0"
-val storeVersionCode = storeVersionName.substringBefore('-').split('.').let { parts ->
-    val (major, minor, patch) = List(3) { parts.getOrNull(it)?.toIntOrNull() ?: 0 }
-    major * 10000 + minor * 100 + patch
-}
+val storeVersionCode = (findProperty("versionCode") as String?)?.toInt() ?: 1
 
 // The catalog the app reads. Point a fork at its own repo with -PcatalogUrl=...
 val catalogUrl = (findProperty("catalogUrl") as String?)
