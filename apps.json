@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "name": "StoreForge",
+  "featured": ["io.github.johndoe6345789.storeforge"],
+  "apps": [
+    {
+      "packageName": "io.github.johndoe6345789.storeforge",
+      "name": "StoreForge",
+      "developer": "johndoe6345789",
+      "summary": "The app store for my apps",
+      "description": "Browse, install, update and uninstall apps published on GitHub releases. StoreForge keeps itself up to date from this list too.",
+      "category": "Tools",
+      "icon": "registry/icons/storeforge.png",
+      "tags": ["store", "updates", "github"],
+      "homepage": "https://github.com/johndoe6345789/StoreForge",
+      "license": "MIT",
+      "github": {
+        "repo": "johndoe6345789/StoreForge",
+        "asset": "^StoreForge\\.apk$"
+      }
+    }
+  ]
+}
